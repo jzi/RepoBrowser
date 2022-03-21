@@ -12,6 +12,8 @@ class GithubRepoResult extends RepoResult {
     protected array $organization;
     protected array $owner;
     protected int $stargazers_count;
+    protected int $commits_count;
+    protected int $pull_requests_count;
 
     static public function fromJSON(string $json): GithubRepoResult {
 
@@ -28,7 +30,12 @@ class GithubRepoResult extends RepoResult {
     }
 
     public function calculateTrustScore(): float {
-        return 0;
+        $result = 0.0;
+        $result += $this->commits_count;
+        $result += $this->pull_requests_count * 1.2;
+        $result += $this->stargazers_count * 2;
+
+        return $result;
     }
 
     public function getStarredUrl(): string {

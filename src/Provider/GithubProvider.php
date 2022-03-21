@@ -40,16 +40,19 @@ class GithubProvider extends Provider implements IAuthable {
                 $body = $response->getBody();
 
                 $commits = count(json_decode($body, true));
+                $repoResult->commits_count = $commits;
                 
                 $url = $this->getCollectionUrl($repoResult->pulls_url);
                 $response = $this->client->get($url);
                 $body = $response->getBody();
-
                 $pulls = count(json_decode($body, true));
+                $repoResult->pull_requests_count = $pulls;
 
                 $stargazers = $repoResult->stargazers_count;
 
-                print "Found repository {$repoResult->name} with {$commits} commits, {$pulls} pull requests and {$stargazers} stargazers" . PHP_EOL;
+                print "Found repository {$repoResult->name} with {$commits} commits, {$pulls} pull requests and {$stargazers} stargazers";
+                $trustScore = $repoResult->calculateTrustScore();
+                print " - trust score is {$trustScore}" . PHP_EOL;
                 
             }
             return true;
