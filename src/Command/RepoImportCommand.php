@@ -23,6 +23,8 @@ class RepoImportCommand extends Command
         $this
 	    ->addArgument('organization', InputArgument::REQUIRED, 'The name of the organization')
             ->addArgument('provider', InputArgument::REQUIRED, 'The name of the provider to use')
+            ->addOption('username', null, InputOption::VALUE_REQUIRED, 'username')
+            ->addOption('password', null, InputOption::VALUE_REQUIRED, 'password')
         ;
     }
 
@@ -33,6 +35,12 @@ class RepoImportCommand extends Command
         $providerName = $input->getArgument('provider');
 
         $provider = Provider::get($providerName);
+
+        if ($provider instanceof \App\Provider\IAuthable) {
+            $username = $input->getOption('username');
+            $password = $input->getOption('password');
+            $provider->setCredentials($username, $password);
+        }
 
         $result = $provider->import($organizationName);
 
