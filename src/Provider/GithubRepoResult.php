@@ -11,6 +11,7 @@ class GithubRepoResult extends RepoResult {
     protected string $pulls_url;
     protected array $organization;
     protected array $owner;
+    protected int $stargazers_count;
 
     static public function fromJSON(string $json): GithubRepoResult {
 

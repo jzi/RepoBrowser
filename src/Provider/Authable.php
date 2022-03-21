@@ -21,4 +21,9 @@ trait Authable {
             throw new \Exception("Trying to use credentials before they're set!");
         }
     }
+
+    public function areCredentialsSet(): bool
+    {
+        return $this->__credentialsSet;
+    }
 }

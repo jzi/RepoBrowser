@@ -14,9 +14,11 @@ class GithubProvider extends Provider implements IAuthable {
     const REPOS_PER_PAGE = 3;
 
     public function import(string $organization):bool {
-
-        $auth = array_values($this->getCredentials());
-        $this->client = new Client(['base_uri' => static::BASE_URL, 'auth' => $auth]);
+        $clientOptions = ['base_uri' => static::BASE_URL];
+        if ($this->areCredentialsSet()) {
+            $clientOptions['auth'] = array_values($this->getCredentials());
+        }
+        $this->client = new Client($clientOptions);
 
         $url = $this->getReposListURL($organization);
         $response = $this->client->get($url);
@@ -45,13 +47,9 @@ class GithubProvider extends Provider implements IAuthable {
 
                 $pulls = count(json_decode($body, true));
 
-                $url = $this->getCollectionUrl($repoResult->owner['starred_url']);
-                $response = $this->client->get($url);
-                $body = $response->getBody();
+                $stargazers = $repoResult->stargazers_count;
 
-                $stars = count(json_decode($body, true));
-
-                print "Found repository {$repoResult->name} with {$commits} commits, {$pulls} pull requests and {$stars} stars" . PHP_EOL;
+                print "Found repository {$repoResult->name} with {$commits} commits, {$pulls} pull requests and {$stargazers} stargazers" . PHP_EOL;
                 
             }
             return true;

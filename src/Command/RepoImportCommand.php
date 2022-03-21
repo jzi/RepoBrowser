@@ -39,7 +39,9 @@ class RepoImportCommand extends Command
         if ($provider instanceof \App\Provider\IAuthable) {
             $username = $input->getOption('username');
             $password = $input->getOption('password');
-            $provider->setCredentials($username, $password);
+            if ($username && $password) {
+                $provider->setCredentials($username, $password);
+            }
         }
 
         $result = $provider->import($organizationName);
