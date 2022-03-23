@@ -5,7 +5,7 @@ namespace App\Tests\App\Provider;
 use PHPUnit\Framework\TestCase;
 use App\Provider\GithubRepoResult;
 
-class RepoResultTest extends TestCase
+class GithubRepoResultTest extends TestCase
 {
     public function testConstructorStoresNameFromJSON(): void
     {

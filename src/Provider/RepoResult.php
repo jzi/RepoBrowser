@@ -16,7 +16,7 @@ abstract class RepoResult implements IRepoResult {
     }
 
     public function update(string $json): bool {
-        $json = json_decode($json, true);
+        $json = json_decode($json, true, 512, JSON_THROW_ON_ERROR);
 
         foreach ($json as $key => $value) {
             $this->$key = $value;
