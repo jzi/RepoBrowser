@@ -14,7 +14,7 @@ class GithubProviderTest extends TestCase
     }
 
     /**
-      * @dataProvider provideValidOrganizationNames
+      * @dataProvider provideValidOrganizations
       */
     public function testGithubProviderFetchesReposFromCorrectUrl(string $organization, string $url): void
     {
@@ -26,9 +26,18 @@ class GithubProviderTest extends TestCase
         $provider = Provider::get('Github');
         $provider->import($organization, $client);
     }
+
+    public function testGithubProviderIsAuthable(): void
+    {
+        $provider = Provider::get('Github');
+        $this->assertFalse($provider->areCredentialsSet());
+        $provider->setCredentials('username', 'password');
+        $this->assertTrue($provider->areCredentialsSet());
+        $this->assertSame(['username' => 'username', 'password' => 'password'], $provider->getCredentials());
+    }
     
 
-    public function provideValidOrganizationNames(): array
+    public function provideValidOrganizations(): array
     {
         return [
             ['microsoft', 'orgs/microsoft/repos'],
