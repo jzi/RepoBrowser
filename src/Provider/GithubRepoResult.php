@@ -38,16 +38,4 @@ class GithubRepoResult extends RepoResult {
         return $result;
     }
 
-    public function getStarredUrl(): string {
-        return $this->starredUrl;
-    }
-
-    public function getCommitsUrl(): string {
-        return $this->commitsUrl;
-    }
-    
-    public function getPullsUrl(): string {
-        return $this->pullsUrl;
-    }
-
 }
