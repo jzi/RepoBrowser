@@ -34,4 +34,30 @@ class RepoResultTest extends TestCase
         $this->assertSame('new url', $repoResult->url);
     }
         
+    /**
+     * @dataProvider provideTrustScoreInputs
+     */
+    public function testTrustScoreIsCalculatedCorrectly(int $commits_count, int $pull_requests_count, int $stargazers_count, float $trustScore): void
+    {
+        $json = json_encode([
+            'commits_count' => $commits_count,
+            'pull_requests_count' => $pull_requests_count,
+            'stargazers_count' => $stargazers_count,
+        ]);
+
+        $repoResult = new GithubRepoResult($json);
+        $result = $repoResult->calculateTrustScore();
+
+        $this->assertSame($trustScore, $result);
+    }
+
+    public function provideTrustScoreInputs(): array
+    {
+        return [
+            [0, 0, 0, 0.0],
+            [1, 2, 3, 9.4],
+            [5, 10, 15, 47.0],
+
+        ];
+    }
 }
