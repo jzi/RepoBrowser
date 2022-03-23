@@ -8,10 +8,6 @@ use App\Provider\GithubProvider;
 
 class GithubProviderTest extends TestCase
 {
-    public function testSomething(): void
-    {
-        $this->assertTrue(true);
-    }
 
     /**
       * @dataProvider provideValidOrganizations
@@ -35,6 +31,14 @@ class GithubProviderTest extends TestCase
         $this->assertTrue($provider->areCredentialsSet());
         $this->assertSame(['username' => 'username', 'password' => 'password'], $provider->getCredentials());
     }
+
+    public function testGithubProviderThrowsWhenReadingUnsetCredentials(): void
+    {
+        $provider = Provider::get('Github');
+        $this->expectException(\Exception::class);
+        $provider->getCredentials();
+    }
+
     
 
     public function provideValidOrganizations(): array
