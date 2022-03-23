@@ -23,8 +23,4 @@ abstract class Provider implements IProvider {
     public function __construct() {
         $this->client = new Client(['base_uri' => static::BASE_URL]);
     }
-
-    public function getClient(): Client {
-        return $this->client;
-    }
 }
