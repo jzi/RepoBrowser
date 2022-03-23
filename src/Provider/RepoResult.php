@@ -3,8 +3,6 @@
 namespace App\Provider;
 
 use App\Provider\IRepoResult;
-use App\Provider\IProvider;
-use GuzzleHttp\Client;
 
 abstract class RepoResult implements IRepoResult {
 
@@ -12,12 +10,8 @@ abstract class RepoResult implements IRepoResult {
     protected string $url;
     protected float $trustScore;
 
-    protected IProvider $provider;
-    protected Client $client;
 
-    public function __construct(string $json, IProvider $provider) {
-        $this->provider = $provider;
-        $this->client = $provider->getClient();
+    public function __construct(string $json) {
         $this->update($json);
     }
 
