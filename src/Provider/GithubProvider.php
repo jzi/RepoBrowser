@@ -13,12 +13,18 @@ class GithubProvider extends Provider implements IAuthable {
     const BASE_URL = 'https://api.github.com';
     const REPOS_PER_PAGE = 3;
 
-    public function import(string $organization):bool {
-        $clientOptions = ['base_uri' => static::BASE_URL];
-        if ($this->areCredentialsSet()) {
-            $clientOptions['auth'] = array_values($this->getCredentials());
+    public function import(string $organization, ?Client $client = null):bool {
+
+        if ($client !== null) {
+            $this->client = $client;
+        } else {
+        
+            $clientOptions = ['base_uri' => static::BASE_URL];
+            if ($this->areCredentialsSet()) {
+                $clientOptions['auth'] = array_values($this->getCredentials());
+            }
+            $this->client = new Client($clientOptions);
         }
-        $this->client = new Client($clientOptions);
 
         $url = $this->getReposListURL($organization);
         $response = $this->client->get($url);
