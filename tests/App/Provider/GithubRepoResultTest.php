@@ -60,4 +60,18 @@ class RepoResultTest extends TestCase
 
         ];
     }
+
+    public function testMagicSetterUpdatesDefinedFields(): void
+    {
+        $repoResult = new GithubRepoResult('{}');
+        $repoResult->name = 'repo name';
+        $this->assertSame('repo name', $repoResult->name);
+    }
+
+    public function testMagicSetterSilentlyFailsForUndefinedFields(): void
+    {
+        $repoResult = new GithubRepoResult('{}');
+        $repoResult->nonexistent_field = 1;
+        $this->assertNull($repoResult->nonexistent_field);
+    }
 }
