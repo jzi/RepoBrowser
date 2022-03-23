@@ -72,6 +72,14 @@ class RepoResultTest extends TestCase
     {
         $repoResult = new GithubRepoResult('{}');
         $repoResult->nonexistent_field = 1;
-        $this->assertNull($repoResult->nonexistent_field);
+        $this->assertFalse(property_exists($repoResult, 'nonexistent_field'));
+    }
+
+    public function testMagicGetterThrowsForUndefinedFields(): void
+    {
+        $this->expectException(\OutOfBoundsException::class);
+        $this->expectExceptionMessage('Property nonexistent_field not defined');
+        $repoResult = new GithubRepoResult('{}');
+        $repoResult->nonexistent_field;
     }
 }

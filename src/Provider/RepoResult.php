@@ -35,8 +35,7 @@ abstract class RepoResult implements IRepoResult {
         if (property_exists($this, $name)) {
             return $this->$name;
         } else {
-            print "Attempting to read non-existent property {$name} in " . __CLASS__ . PHP_EOL;
-            return null;
+            throw new \OutOfBoundsException("Property {$name} not defined for class " . __CLASS__);
         }
     }
 }
