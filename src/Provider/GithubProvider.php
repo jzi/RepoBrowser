@@ -72,7 +72,7 @@ class GithubProvider extends Provider implements IAuthable {
     }
 
 
-    public function getCollectionUrl(string $url): string {
+    private function getCollectionUrl(string $url): string {
         $url = preg_replace('/{.*?}$/', '', $url);
 
         return $url;
