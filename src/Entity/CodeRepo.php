@@ -16,7 +16,7 @@ class CodeRepo
     #[ORM\Column(type: 'string', length: 255)]
     private $name;
 
-    #[ORM\ManyToOne(targetEntity: Organization::class, inversedBy: 'codeRepos')]
+    #[ORM\ManyToOne(targetEntity: Organization::class, inversedBy: 'codeRepos', cascade: ['persist'])]
     #[ORM\JoinColumn(nullable: false)]
     private $organization;
 

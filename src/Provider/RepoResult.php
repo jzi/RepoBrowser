@@ -9,7 +9,7 @@ abstract class RepoResult implements IRepoResult {
     protected string $name;
     protected string $url;
     protected float $trustScore;
-
+    protected string $created_at;
 
     public function __construct(string $json) {
         $this->update($json);
@@ -23,6 +23,10 @@ abstract class RepoResult implements IRepoResult {
         }
 
         return true;
+    }
+
+    public function getCreationDate(): \DateTimeInterface {
+        return new \DateTime($this->created_at);
     }
 
     public function __set(string $name, mixed $value) {

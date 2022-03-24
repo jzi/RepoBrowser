@@ -20,6 +20,7 @@ class GithubRepoResult extends RepoResult {
         $result += $this->commits_count;
         $result += $this->pull_requests_count * 1.2;
         $result += $this->stargazers_count * 2;
+        $this->trustScore = $result;
 
         return $result;
     }
