@@ -57,45 +57,45 @@ class RepoImportCommand extends Command
             }
         }
 
-        $repositories = $provider->import($organizationName);
-
-        foreach ($repositories as $repository) {
-
-            $repository->calculateTrustScore();
-
+        try {
             $ormOrgRepository = $this->entityManager->getRepository(Organization::class);
-            $ormRepository = $this->entityManager->getRepository(CodeRepo::class);
-
             $organization = $ormOrgRepository->findOneByName($organizationName);
 
-            if (is_null($organization))
-            {
+            if (is_null($organization)) {
                 $organization = new Organization();
                 $organization->setName($organizationName);
+                $this->entityManager->persist($organization);
             }
 
-            $codeRepo = $ormRepository->findOneByName($repository->name);
+            $repositories = $provider->import($organizationName);
 
-            if (is_null($codeRepo)) {
-                $codeRepo = new CodeRepo();
+            foreach ($repositories as $repository) {
+
+                $repository->calculateTrustScore();
+                $ormRepository = $this->entityManager->getRepository(CodeRepo::class);
+                $codeRepo = $ormRepository->findOneByName($repository->name);
+
+                if (is_null($codeRepo)) {
+                    $codeRepo = new CodeRepo();
+                }
+
+                $codeRepo->setOrganization($organization);
+                $codeRepo->setName($repository->name);
+                $codeRepo->setTrustScore($repository->trustScore);
+                $codeRepo->setCreationDate($repository->getCreationDate());
+                $this->entityManager->persist($codeRepo);
             }
 
-            $codeRepo->setOrganization($organization);
-            $codeRepo->setName($repository->name);
-            $codeRepo->setTrustScore($repository->trustScore);
-            $codeRepo->setCreationDate($repository->getCreationDate());
-            $this->entityManager->persist($codeRepo);
-        }
-
-        $result = $this->entityManager->flush();
-
-        if ($result) {
+            $this->entityManager->flush();
 
             $io->success('Import successful!');
+
             return Command::SUCCESS;
 
-        } else {
+        } catch (\Exception $e) {
             $io->error('Import failed!');
+            $io->error($e->getMessage());
+
             return Command::FAILURE;
         }
 

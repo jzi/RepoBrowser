@@ -16,6 +16,7 @@ class Organization
     private $id;
 
     #[ORM\Column(type: 'string', length: 255)]
+    #[Assert\Unique]
     private $name;
 
     #[ORM\OneToMany(mappedBy: 'organization', targetEntity: CodeRepo::class, orphanRemoval: true)]
