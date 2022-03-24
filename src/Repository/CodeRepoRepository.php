@@ -45,32 +45,8 @@ class CodeRepoRepository extends ServiceEntityRepository
         }
     }
 
-    // /**
-    //  * @return CodeRepo[] Returns an array of CodeRepo objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    public function findAll()
     {
-        return $this->createQueryBuilder('c')
-            ->andWhere('c.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('c.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
+        return $this->findBy(array(), array('creation_date' => 'DESC'));
     }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?CodeRepo
-    {
-        return $this->createQueryBuilder('c')
-            ->andWhere('c.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }
