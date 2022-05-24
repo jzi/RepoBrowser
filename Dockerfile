@@ -14,7 +14,6 @@ RUN groupadd --gid 1000 repobrowser && \
     useradd --uid 1000 --gid repobrowser --shell /bin/bash --create-home repobrowser
 
 COPY --from=composer:2.3.5 /usr/bin/composer /usr/bin/composer
-COPY docker/apache.conf /etc/apache2/sites-enabled/000-default.conf
 COPY docker/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
