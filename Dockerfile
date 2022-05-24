@@ -10,14 +10,15 @@ RUN apt-get update \
 RUN pecl install xdebug && docker-php-ext-enable xdebug
 RUN docker-php-ext-install pdo pdo_pgsql zip
 
+RUN groupadd --gid 1000 repobrowser && \
+    useradd --uid 1000 --gid repobrowser --shell /bin/bash --create-home repobrowser
 
 COPY --from=composer:2.3.5 /usr/bin/composer /usr/bin/composer
 COPY docker/apache.conf /etc/apache2/sites-enabled/000-default.conf
-COPY . /var/www
 COPY docker/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
-WORKDIR /var/www
+WORKDIR /home/repobrowser/project
 
 CMD ["apache2-foreground"]
 

@@ -7,4 +7,3 @@ bin/console doctrine:migrations:migrate
 bin/console doctrine:migrations:migrate --env=test
 
 exec "$@"
-
