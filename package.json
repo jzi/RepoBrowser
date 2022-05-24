@@ -1,4 +1,5 @@
 {
+    "name": "RepoBrowser",
     "devDependencies": {
         "@hotwired/stimulus": "^3.0.0",
         "@popperjs/core": "^2.11.4",
