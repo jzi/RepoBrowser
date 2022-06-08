@@ -8,8 +8,7 @@ Feature: Listing repositories
   Scenario: I want to list known repositories
     When I request "/api/repositories.json" using HTTP "GET"
     Then the response code is "200"
-    And  the response body is a JSON array with a length of at least "3"
-    And  the response body is a JSON array with a length of at most "3"
+    And  the response body is a JSON array of length "3"
     And  the response contains the repository "test-repo1" from organization "test-org1"
     And  the response contains the repository "test-repo2" from organization "test-org1"
     And  the response contains the repository "test-repo3" from organization "test-org2"
