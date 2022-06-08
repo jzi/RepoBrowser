@@ -103,6 +103,7 @@
     "require-dev": {
         "behat/behat": "^3.10",
         "dama/doctrine-test-bundle": "^6.7",
+        "doctrine/data-fixtures": "^1.5",
         "friends-of-behat/symfony-extension": "^2.3",
         "imbo/behat-api-extension": "^3.0",
         "phpunit/phpunit": "^9.5",
