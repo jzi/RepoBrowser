@@ -2,12 +2,17 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\OrganizationRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: OrganizationRepository::class)]
+#[ApiResource(
+    shortName: 'organization'
+)]
 class Organization
 {
     #[ORM\Id]
@@ -17,6 +22,7 @@ class Organization
 
     #[ORM\Column(type: 'string', length: 255)]
     #[Assert\Unique]
+    #[Groups('coderepository:list')]
     private $name;
 
     #[ORM\OneToMany(mappedBy: 'organization', targetEntity: CodeRepo::class, orphanRemoval: true)]
