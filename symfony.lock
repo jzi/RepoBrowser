@@ -1,4 +1,7 @@
 {
+    "aeon-php/calendar": {
+        "version": "1.0.4"
+    },
     "api-platform/core": {
         "version": "2.6",
         "recipe": {
@@ -24,6 +27,12 @@
     },
     "behat/transliterator": {
         "version": "v1.5.0"
+    },
+    "coduo/php-matcher": {
+        "version": "6.0.8"
+    },
+    "coduo/php-to-string": {
+        "version": "3.2.0"
     },
     "dama/doctrine-test-bundle": {
         "version": "6.7",

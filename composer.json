@@ -102,6 +102,7 @@
     },
     "require-dev": {
         "behat/behat": "^3.10",
+        "coduo/php-matcher": "^6.0",
         "dama/doctrine-test-bundle": "^6.7",
         "doctrine/data-fixtures": "^1.5",
         "friends-of-behat/symfony-extension": "^2.3",

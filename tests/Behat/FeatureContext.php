@@ -7,6 +7,7 @@ use App\Entity\Organization;
 use Behat\Behat\Context\Context;
 use Behat\Behat\Tester\Exception\PendingException;
 use Behat\Gherkin\Node\TableNode;
+use Coduo\PHPMatcher\PHPMatcher;
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 use Doctrine\ORM\EntityManagerInterface;
 use GuzzleHttp\Client;
@@ -61,17 +62,22 @@ class FeatureContext extends ApiContext
     public function theResponseContainsTheRepositoryFromOrganization($repository, $organization)
     {
         $json = json_decode($this->response->getBody(), true);
+        $matcher = new PHPMatcher();
 
-        foreach ($json as $item)
-        {
-            if (
-                array_key_exists('name', $item) &&
-                $item['name'] == $repository &&
-                array_key_exists('organization', $item) &&
-                array_key_exists('name', $item['organization']) &&
-                $item['organization']['name'] == $organization
-            )
-                return true;
+
+        foreach ($json as $item) {
+
+            $pattern = [
+                'id' => '@integer@',
+                'name' => $repository,
+                'organization' => ['name' => $organization],
+                'creation_date' => '@datetime@',
+                'trust_score' => '@number@'
+            ];
+
+            $match = $matcher->match($item, $pattern);
+
+            if ($match) return true;
         }
 
         throw new AssertionFailedException("Repository {$repository} of organization {$organization} not found in response");
