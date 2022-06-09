@@ -1,22 +1,31 @@
-version: '3'
+version: '3.5'
 
 services:
 
   app:
     build: .
     ports:
-      - 8080:80
+      - "8080:80"
+    networks:
+      default:
+        aliases:
+          - "app-test"
+      nginx-proxy: ~
     expose:
       - 9000
+      - 80
+    environment:
+      - VIRTUAL_HOST=repobrowser.dev,test.repobrowser.dev
     volumes:
       - ./docker/php/conf.d/xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
       - ./docker/php/conf.d/error_reporting.ini:/usr/local/etc/php/conf.d/error_reporting.ini
       - .:/home/repobrowser/project
       - ./docker/apache.conf:/etc/apache2/sites-enabled/000-default.conf
+
   postgres:
     image: postgres:${POSTGRES_VERSION:-13}-alpine
     ports:
-      - 5432:5432
+      - "5432:5432"
     environment:
       POSTGRES_DB: ${POSTGRES_DB:-app}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-pgpass}
@@ -24,6 +33,20 @@ services:
       POSTGRES_HOST: postgres
     volumes:
       - db-data:/var/lib/postgresql/data:rw
+    networks:
+      - default
+      - nginx-proxy
+  nginx-proxy:
+    image: jwilder/nginx-proxy
+    ports:
+      - "80:80"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+    networks:
+      - default
+      - nginx-proxy
 volumes:
   db-data:
-    
+networks:
+  nginx-proxy:
+    name: nginx-proxy

@@ -2,6 +2,7 @@
 
 namespace App\Tests\App\Command;
 
+use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Console\Tester\CommandTester;
@@ -31,5 +32,24 @@ class RepoImportCommandTest extends KernelTestCase
         $repo = $em->getRepository(CodeRepo::class);
 
         $this->assertCount(3, $repo->findAll());
+    }
+
+    public function setUp(): void
+    {
+        parent::setUp();
+        self::bootKernel();
+        $em = $this->getEntityManager();
+        $purger = new ORMPurger($em);
+        $purger->purge();
+    }
+
+    /**
+     * @return EntityManager
+     */
+    private function getEntityManager()
+    {
+        return self::$kernel->getContainer()
+            ->get('doctrine')
+            ->getManager();
     }
 }

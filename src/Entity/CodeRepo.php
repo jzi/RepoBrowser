@@ -4,26 +4,40 @@ namespace App\Entity;
 
 use App\Repository\CodeRepoRepository;
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Core\Annotation\ApiResource;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: CodeRepoRepository::class)]
+#[ApiResource(
+    shortName: 'repository',
+    collectionOperations: ['get' => ['normalization_context' => ['groups' => 'coderepository:list']]],
+    itemOperations: ['get' => ['normalization_context' => ['groups' => 'coderepository:item']]],
+    order: ['creation_date' => 'ASC'],
+    paginationEnabled: true
+)]
 class CodeRepo
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
+    #[Groups(['coderepository:list', 'coderepository:item'])]
     private $id;
 
     #[ORM\Column(type: 'string', length: 255)]
+    #[Groups(['coderepository:list', 'coderepository:item'])]
     private $name;
 
     #[ORM\ManyToOne(targetEntity: Organization::class, inversedBy: 'codeRepos', cascade: ['persist'])]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['coderepository:list', 'coderepository:item'])]
     private $organization;
 
     #[ORM\Column(type: 'datetime', nullable: true)]
+    #[Groups(['coderepository:list', 'coderepository:item'])]
     private $creation_date;
 
     #[ORM\Column(type: 'float')]
+    #[Groups(['coderepository:list', 'coderepository:item'])]
     private $trust_score;
 
     public function getId(): ?int
