@@ -93,6 +93,17 @@ class FeatureContext extends ApiContext
         return self::prepareDatabase();
     }
 
+    /**
+     * @BeforeScenario
+     *
+     * @return void
+     */
+    public function beforeScenario()
+    {
+        $this->purgeDatabase();
+    }
+
+
     private function purgeDatabase()
     {
         $purger = new ORMPurger($this->entityManager);
