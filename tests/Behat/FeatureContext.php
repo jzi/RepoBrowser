@@ -6,14 +6,20 @@ use App\Entity\CodeRepo;
 use App\Entity\Organization;
 use Behat\Behat\Context\Context;
 use Behat\Behat\Tester\Exception\PendingException;
+use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
 use Coduo\PHPMatcher\PHPMatcher;
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 use Doctrine\ORM\EntityManagerInterface;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Response;
+use GuzzleHttp\RequestOptions;
 use Imbo\BehatApiExtension\Context\ApiContext;
 use Imbo\BehatApiExtension\Exception\AssertionFailedException;
+use Symfony\Bundle\FrameworkBundle\Console\Application;
+use Symfony\Component\Console\Input\ArgvInput;
+use Symfony\Component\Console\Output\BufferedOutput;
+use Symfony\Component\HttpKernel\KernelInterface;
 
 /**
  * Defines application features from the specific context.
@@ -21,6 +27,13 @@ use Imbo\BehatApiExtension\Exception\AssertionFailedException;
 class FeatureContext extends ApiContext
 {
     private EntityManagerInterface $entityManager;
+    private KernelInterface $kernel;
+    private Application $application;
+    private BufferedOutput $output;
+    private string $email;
+    private string $password;
+    private string $jwt;
+
     /**
      * Initializes context.
      *
@@ -28,9 +41,15 @@ class FeatureContext extends ApiContext
      * You can also pass arbitrary arguments to the
      * context constructor through behat.yml.
      */
-    public function __construct(EntityManagerInterface $entityManager)
+    public function __construct(
+        EntityManagerInterface $entityManager,
+        KernelInterface $kernel
+    )
     {
         $this->entityManager = $entityManager;
+        $this->kernel = $kernel;
+        $this->application = new Application($kernel);
+        $this->output = new BufferedOutput();
     }
 
 
@@ -53,6 +72,46 @@ class FeatureContext extends ApiContext
         }
 
         $this->entityManager->flush();
+    }
+
+    /**
+     * @Given a user exists with email :email and password :password
+     * @throws AssertionFailedException
+     */
+    public function aUserExistsWithEmailAndPassword($email, $password)
+    {
+        $cmd = 'app:users:create';
+        $input = new ArgvInput(['behat', $cmd, $email, $password]);
+
+        $this->output->fetch();
+
+        try {
+            $this->application->doRun($input, $this->output);
+            $this->email = $email;
+            $this->password = $password;
+        } catch (\Throwable $e) {
+            throw new AssertionFailedException("Command {$cmd} failed!" . PHP_EOL . $e->getMessage());
+        }
+
+    }
+
+
+    /**
+     * @Given I am authenticated
+     */
+    public function iAmAuthenticated()
+    {
+        $reqBody = json_encode([
+            'username' => $this->email,
+            'password' => $this->password
+        ]);
+
+        $this->addRequestHeader('Content-Type', 'application/json');
+        $this->setRequestBody($reqBody);
+        $this->requestPath('/api/login_check', 'POST');
+        $response = $this->getResponseBody();
+        $this->jwt = $response->token;
+        $this->addRequestHeader("Authorization", "Bearer {$this->jwt}");
     }
 
     /**
